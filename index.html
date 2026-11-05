@@ -1,11 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aniah Collection</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aniah's Collection | Timeless fabrics. Endless style.</title>
+<meta name="description" content="Shop Ankara, lace, adire and aso-oke fabrics from Aniah's Collection.">
+<link rel="icon" href="images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <h1>Welcome to Aniah Collection</h1>
+<div class="bar">Free delivery in Lagos on orders over ₦50,000</div>
+
+<header>
+  <button id="menuBtn" aria-label="Open menu" aria-expanded="false">☰</button>
+  <nav id="links" aria-label="Main">
+    <a href="#shop">New in</a>
+    <a href="#collections">Ankara</a>
+    <a href="#collections">Lace</a>
+    <a href="#collections">Collections</a>
+  </nav>
+  <a class="logo" href="#top" aria-label="Aniah's Collection home"><b>Aniah's</b><small>COLLECTION</small></a>
+  <div class="tools">
+    <a href="#" class="hide-s">Search</a>
+    <a href="#" class="hide-s">Account</a>
+    <a href="#" class="hide-s">Wishlist</a>
+    <button id="cartBtn">Cart (<span id="count">0</span>)</button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="hero-t">
+      <small>Timeless fabrics. Endless style.</small>
+      <h1>Fabrics That Tell Your Story</h1>
+      <p>Beautiful Ankara, lace and adire, chosen with care for every occasion.</p>
+      <a class="btn" href="#shop">SHOP THE COLLECTION</a>
+    </div>
+    <div class="hero-i">
+      <div class="ph" style="--img:url(images/hero.jpg)" role="img" aria-label="Ankara fabric"></div>
+      <div class="badge">Quality<br>fabrics</div>
+    </div>
+  </section>
+
+  <section id="collections" class="wrap">
+    <div class="st"><small>Curated for you</small><h2>Featured Collections</h2></div>
+    <div class="cols">
+      <a class="col" href="#shop"><div class="ph" style="--img:url(images/ankara.jpg)"></div><span>ANKARA +</span></a>
+      <a class="col" href="#shop"><div class="ph" style="--img:url(images/lace.jpg)"></div><span>LACE +</span></a>
+      <a class="col" href="#shop"><div class="ph" style="--img:url(images/adire.jpg)"></div><span>ADIRE +</span></a>
+      <a class="col" href="#shop"><div class="ph" style="--img:url(images/asooke.jpg)"></div><span>ASO-OKE +</span></a>
+    </div>
+  </section>
+
+  <section id="shop" class="wrap">
+    <div class="st left"><small>Most loved</small><h2>Best Sellers</h2></div>
+    <div id="grid" class="grid"></div>
+  </section>
+
+  <section class="craft">
+    <div class="craft-t">
+      <small>Chosen with purpose</small>
+      <h2>The Art of Fine Fabric</h2>
+      <p>Every roll is picked for its colour, feel and finish, so what you sew keeps looking good wash after wash.</p>
+      <ul>
+        <li>✦ Quality fabrics</li>
+        <li>✦ Vibrant prints</li>
+        <li>✦ Made to last</li>
+      </ul>
+      <a class="btn line" href="#">LEARN OUR STORY</a>
+    </div>
+    <div class="ph" style="--img:url(images/craft.jpg)" role="img" aria-label="Tailor at work"></div>
+  </section>
+
+  <section class="wrap">
+    <div class="st"><small>Real stories</small><h2>What Our Customers Say</h2></div>
+    <div class="slider">
+      <button id="prev" aria-label="Previous reviews">‹</button>
+      <div id="rev" class="rev">
+        <blockquote><p>The Ankara colours are even brighter in person. My tailor loved working with it.</p><cite>Ada O. ★★★★★</cite></blockquote>
+        <blockquote><p>Fast delivery and the lace was exactly as pictured. I will order again.</p><cite>Funke A. ★★★★★</cite></blockquote>
+        <blockquote><p>Aso-oke for my sister's wedding, and everyone asked where I got it.</p><cite>Chioma E. ★★★★★</cite></blockquote>
+        <blockquote><p>Good quality, fair prices and very helpful on WhatsApp.</p><cite>Tola B. ★★★★★</cite></blockquote>
+      </div>
+      <button id="next" aria-label="Next reviews">›</button>
+    </div>
+  </section>
+
+  <section class="split">
+    <div class="guide">
+      <div class="ph" style="--img:url(images/guide.jpg)"></div>
+      <div>
+        <small>Not sure what to buy?</small>
+        <h2>Fabric Guide</h2>
+        <p>From weddings to everyday wear, find the right fabric for every occasion.</p>
+        <a href="#shop" class="ulink">EXPLORE THE GUIDE</a>
+      </div>
+    </div>
+    <div class="join">
+      <small>Stay connected</small>
+      <h2>Join Our Community</h2>
+      <p>Be the first to hear about new arrivals and special offers.</p>
+      <form id="sub">
+        <input type="email" placeholder="Enter your email address" aria-label="Email address" required>
+        <button>SUBSCRIBE</button>
+      </form>
+      <p id="subMsg" role="status"></p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="foot wrap">
+    <div><img src="images/logo.png" alt="Aniah's Collection" width="170"></div>
+    <div><h3>Shop</h3><a href="#shop">New in</a><a href="#shop">Ankara</a><a href="#shop">Lace</a><a href="#shop">Adire</a></div>
+    <div><h3>Collections</h3><a href="#collections">Best sellers</a><a href="#collections">Aso-oke</a><a href="#collections">Fabric guide</a></div>
+    <div><h3>Customer care</h3><a href="#">About us</a><a href="#">Delivery and returns</a><a href="#">FAQs</a><a href="#">Contact us</a></div>
+    <div><h3>Our promise</h3><p>Fast delivery<br>Easy returns<br>Secure payments</p></div>
+  </div>
+  <p class="copy">© 2026 Aniah's Collection. All rights reserved.</p>
+</footer>
+
+<div id="overlay" hidden></div>
+<aside id="drawer" aria-label="Shopping cart" aria-hidden="true">
+  <div class="dh"><h2>Your cart</h2><button id="close" aria-label="Close cart">✕</button></div>
+  <ul id="items"></ul>
+  <div class="df">
+    <p>Total <b id="total">₦0</b></p>
+    <a id="wa" class="btn" href="#" target="_blank" rel="noopener">ORDER ON WHATSAPP</a>
+  </div>
+</aside>
+<script src="js/script.js"></script>
 </body>
 </html>
