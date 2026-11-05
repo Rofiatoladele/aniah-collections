@@ -1,92 +1,644 @@
-// ===== 1. YOUR PRODUCTS: add or edit items here =====
-// "i" is the image file name inside the images folder (p1 means images/p1.jpg)
-const PRODUCTS = [
-  { id: 1, n: "Royal Ankara, 6 yards",  p: 18500, i: "p1" },
-  { id: 2, n: "Floral Lace, 5 yards",   p: 45000, i: "p2" },
-  { id: 3, n: "Indigo Adire, 5 yards",  p: 22000, i: "p3" },
-  { id: 4, n: "Aso-oke Set",            p: 60000, i: "p4" },
-  { id: 5, n: "Pink Satin Ankara",      p: 20000, i: "p5" }
+// ======================================
+// ANIAH'S COLLECTION - STORE SETTINGS
+// ======================================
+
+// EDIT THESE DETAILS WITH YOUR BANK INFORMATION
+
+const STORE = {
+  accountName: "YOUR PERSONAL ACCOUNT NAME",
+  bankName: "YOUR BANK NAME",
+  accountNumber: "0000000000",
+  whatsapp: "2348012345678"
+};
+
+// ======================================
+// DEMO PRODUCTS
+// ======================================
+
+const products = [
+  {
+    id: 1,
+    name: "Royal Bloom Ankara",
+    category: "Ankara",
+    price: 18500,
+    unit: "Per 6 yards",
+    image: "",
+    description: "Beautiful floral-inspired Ankara print."
+  },
+  {
+    id: 2,
+    name: "Golden Petals Ankara",
+    category: "Ankara",
+    price: 20000,
+    unit: "Per 6 yards",
+    image: "",
+    description: "A beautiful fabric for special occasions."
+  },
+  {
+    id: 3,
+    name: "Classic Akwete",
+    category: "Akwete",
+    price: 35000,
+    unit: "Per piece",
+    image: "",
+    description: "Traditional woven Akwete material."
+  },
+  {
+    id: 4,
+    name: "Heritage Akwete",
+    category: "Akwete",
+    price: 42000,
+    unit: "Per piece",
+    image: "",
+    description: "Beautiful traditional-inspired weave."
+  },
+  {
+    id: 5,
+    name: "Premium Senator",
+    category: "Senator",
+    price: 28000,
+    unit: "Per 6 yards",
+    image: "",
+    description: "Quality Senator material."
+  },
+  {
+    id: 6,
+    name: "Everyday Senator",
+    category: "Senator",
+    price: 24000,
+    unit: "Per 6 yards",
+    image: "",
+    description: "A versatile fabric for everyday outfits."
+  },
+  {
+    id: 7,
+    name: "Colour Story Ankara",
+    category: "Ankara",
+    price: 16500,
+    unit: "Per 6 yards",
+    image: "",
+    description: "A colourful print for your wardrobe."
+  },
+  {
+    id: 8,
+    name: "Blush Garden",
+    category: "Other",
+    price: 19000,
+    unit: "Per 6 yards",
+    image: "",
+    description: "A beautiful fabric for different occasions."
+  }
 ];
 
-// ===== 2. YOUR WHATSAPP NUMBER: country code first, no + sign =====
-const WHATSAPP = "234XXXXXXXXXX";
+// ======================================
+// VARIABLES
+// ======================================
 
-const $ = s => document.querySelector(s);
-const naira = n => "₦" + n.toLocaleString();
-let cart = {};
-try { cart = JSON.parse(localStorage.getItem("aniahCart")) || {}; } catch (e) {}
+let cart = [];
+let selectedCategory = "All";
+let customer = {};
+let orderNumber = "";
 
-// Build the product cards
-$("#grid").innerHTML = PRODUCTS.map(p => `
-  <article class="card">
-    <button class="heart" aria-label="Save to wishlist">♡</button>
-    <div class="ph" style="--img:url(images/${p.i}.jpg)"></div>
-    <div class="info">
-      <h3>${p.n}</h3>
-      <p>${naira(p.p)}</p>
-      <button class="add" data-id="${p.id}">Add to cart</button>
-    </div>
-  </article>`).join("");
+const productGrid = document.getElementById("productGrid");
 
-// Redraw the cart and save it so it survives a refresh
-function update() {
-  try { localStorage.setItem("aniahCart", JSON.stringify(cart)); } catch (e) {}
-  const rows = PRODUCTS.filter(p => cart[p.id]);
-  const count = rows.reduce((s, p) => s + cart[p.id], 0);
-  const total = rows.reduce((s, p) => s + cart[p.id] * p.p, 0);
-  $("#count").textContent = count;
-  $("#total").textContent = naira(total);
-  $("#items").innerHTML = rows.length
-    ? rows.map(p => `<li>
-        <div><b>${p.n}</b><br>${naira(p.p)}</div>
-        <div class="qty">
-          <button data-id="${p.id}" data-d="-1" aria-label="Remove one">−</button>${cart[p.id]}
-          <button data-id="${p.id}" data-d="1" aria-label="Add one">+</button>
-        </div></li>`).join("")
-    : "<li>Your cart is empty. Add a fabric to get started.</li>";
-  const msg = "Hello Aniah's Collection, I would like to order:\n" +
-    rows.map(p => `${cart[p.id]} x ${p.n}`).join("\n") + "\nTotal: " + naira(total);
-  $("#wa").href = `https://wa.me/${WHATSAPP}?text=` + encodeURIComponent(msg);
-  $("#wa").style.display = rows.length ? "block" : "none";
-}
+const formatMoney = amount =>
+  "₦" + Number(amount).toLocaleString("en-NG");
 
-function openCart(open) {
-  $("#drawer").classList.toggle("open", open);
-  $("#drawer").setAttribute("aria-hidden", !open);
-  $("#overlay").hidden = !open;
-}
+// ======================================
+// DISPLAY PRODUCTS
+// ======================================
 
-document.addEventListener("click", e => {
-  const t = e.target;
-  if (t.matches(".add")) { cart[t.dataset.id] = (cart[t.dataset.id] || 0) + 1; update(); openCart(true); }
-  if (t.dataset.d) {
-    const id = t.dataset.id;
-    cart[id] = (cart[id] || 0) + Number(t.dataset.d);
-    if (cart[id] <= 0) delete cart[id];
-    update();
+function displayProducts() {
+
+  const search =
+    document.getElementById("searchInput").value.toLowerCase();
+
+  const filteredProducts = products.filter(product => {
+
+    const categoryMatch =
+      selectedCategory === "All" ||
+      product.category === selectedCategory;
+
+    const searchMatch =
+      product.name.toLowerCase().includes(search) ||
+      product.category.toLowerCase().includes(search);
+
+    return categoryMatch && searchMatch;
+  });
+
+  if (!filteredProducts.length) {
+    productGrid.innerHTML =
+      '<p class="empty-message">No fabrics found. Try another search.</p>';
+    return;
   }
-  if (t.matches(".heart")) t.textContent = t.textContent === "♡" ? "♥" : "♡";
+
+  productGrid.innerHTML = filteredProducts.map(product => {
+
+    const image = product.image
+      ? `<img src="${product.image}" alt="${product.name}">`
+      : `<div class="product-placeholder ${product.category.toLowerCase()}">✿</div>`;
+
+    return `
+      <div class="product-card">
+
+        <div class="product-image">
+          ${image}
+        </div>
+
+        <div class="product-info">
+
+          <span class="category-label">
+            ${product.category.toUpperCase()}
+          </span>
+
+          <h3>${product.name}</h3>
+
+          <p class="price">
+            ${formatMoney(product.price)}
+          </p>
+
+          <p class="unit">${product.unit}</p>
+
+          <button
+            class="add-button"
+            onclick="addToCart(${product.id})">
+
+            ADD TO CART +
+
+          </button>
+
+        </div>
+
+      </div>
+    `;
+
+  }).join("");
+}
+
+// ======================================
+// FILTER PRODUCTS
+// ======================================
+
+document.querySelectorAll(".filter").forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    document.querySelectorAll(".filter").forEach(btn =>
+      btn.classList.remove("active")
+    );
+
+    button.classList.add("active");
+
+    selectedCategory = button.dataset.filter;
+
+    displayProducts();
+
+  });
+
 });
 
-$("#cartBtn").onclick = () => openCart(true);
-$("#close").onclick = $("#overlay").onclick = () => openCart(false);
-document.addEventListener("keydown", e => { if (e.key === "Escape") openCart(false); });
+// COLLECTION CLICKS
 
-// Mobile menu
-$("#menuBtn").onclick = () => {
-  const show = $("#links").classList.toggle("show");
-  $("#menuBtn").setAttribute("aria-expanded", show);
-};
+document.querySelectorAll(".collection-card").forEach(card => {
 
-// Review slider arrows
-$("#prev").onclick = () => $("#rev").scrollBy({ left: -340, behavior: "smooth" });
-$("#next").onclick = () => $("#rev").scrollBy({ left: 340, behavior: "smooth" });
+  card.addEventListener("click", () => {
 
-// Newsletter (shows a message only; connect a real service later)
-$("#sub").onsubmit = e => {
-  e.preventDefault();
-  $("#subMsg").textContent = "Thank you for subscribing.";
-  e.target.reset();
-};
+    selectedCategory = card.dataset.category;
 
-update();
+    document.querySelectorAll(".filter").forEach(btn => {
+
+      btn.classList.toggle(
+        "active",
+        btn.dataset.filter === selectedCategory
+      );
+
+    });
+
+    displayProducts();
+
+    document.getElementById("shop").scrollIntoView();
+
+  });
+
+});
+
+// SEARCH
+
+document.getElementById("searchInput")
+  .addEventListener("input", displayProducts);
+
+// ======================================
+// SHOPPING CART
+// ======================================
+
+function addToCart(id) {
+
+  const existing = cart.find(item => item.id === id);
+
+  if (existing) {
+    existing.quantity++;
+  } else {
+    cart.push({
+      id,
+      quantity: 1
+    });
+  }
+
+  updateCart();
+
+}
+
+function updateCart() {
+
+  const cartItems = document.getElementById("cartItems");
+
+  let total = 0;
+  let count = 0;
+
+  if (cart.length === 0) {
+
+    cartItems.innerHTML =
+      "<p>Your shopping cart is empty.</p>";
+
+  } else {
+
+    cartItems.innerHTML = cart.map(item => {
+
+      const product = products.find(p => p.id === item.id);
+
+      if (!product) return "";
+
+      const subtotal = product.price * item.quantity;
+
+      total += subtotal;
+      count += item.quantity;
+
+      return `
+
+        <div class="cart-item">
+
+          <h4>${product.name}</h4>
+
+          <p>${formatMoney(product.price)}</p>
+
+          <div class="quantity-controls">
+
+            <button onclick="changeQuantity(${product.id}, -1)">
+              -
+            </button>
+
+            <span>${item.quantity}</span>
+
+            <button onclick="changeQuantity(${product.id}, 1)">
+              +
+            </button>
+
+            <button
+              class="remove-button"
+              onclick="removeFromCart(${product.id})">
+
+              Remove
+
+            </button>
+
+          </div>
+
+          <p>Subtotal: ${formatMoney(subtotal)}</p>
+
+        </div>
+
+      `;
+
+    }).join("");
+
+  }
+
+  document.getElementById("cartCount").textContent = count;
+
+  document.getElementById("cartTotal").textContent =
+    formatMoney(total);
+
+}
+
+function changeQuantity(id, amount) {
+
+  const item = cart.find(product => product.id === id);
+
+  if (!item) return;
+
+  item.quantity += amount;
+
+  if (item.quantity <= 0) {
+    cart = cart.filter(product => product.id !== id);
+  }
+
+  updateCart();
+
+}
+
+function removeFromCart(id) {
+
+  cart = cart.filter(item => item.id !== id);
+
+  updateCart();
+
+}
+
+// ======================================
+// OPEN AND CLOSE CART
+// ======================================
+
+const cartPanel = document.getElementById("cartPanel");
+const overlay = document.getElementById("overlay");
+
+document.getElementById("cartButton")
+  .addEventListener("click", () => {
+
+    cartPanel.classList.add("open");
+    overlay.classList.add("show");
+
+  });
+
+function closeCart() {
+
+  cartPanel.classList.remove("open");
+  overlay.classList.remove("show");
+
+}
+
+document.getElementById("closeCart")
+  .addEventListener("click", closeCart);
+
+overlay.addEventListener("click", closeCart);
+
+// ======================================
+// CHECKOUT
+// ======================================
+
+const checkoutModal =
+  document.getElementById("checkoutModal");
+
+document.getElementById("checkoutButton")
+  .addEventListener("click", () => {
+
+    if (cart.length === 0) {
+      alert("Please add a fabric to your cart first.");
+      return;
+    }
+
+    closeCart();
+
+    checkoutModal.classList.add("open");
+
+  });
+
+document.getElementById("closeCheckout")
+  .addEventListener("click", () => {
+
+    checkoutModal.classList.remove("open");
+
+  });
+
+// ======================================
+// CUSTOMER DETAILS
+// ======================================
+
+document.getElementById("customerForm")
+  .addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    customer = {
+
+      name: document.getElementById("customerName").value,
+
+      phone: document.getElementById("customerPhone").value,
+
+      email: document.getElementById("customerEmail").value,
+
+      address: document.getElementById("customerAddress").value,
+
+      city: document.getElementById("customerCity").value,
+
+      state: document.getElementById("customerState").value
+
+    };
+
+    // Calculate order total
+
+    const total = cart.reduce((sum, item) => {
+
+      const product = products.find(p => p.id === item.id);
+
+      return sum + product.price * item.quantity;
+
+    }, 0);
+
+    // Display bank details
+
+    document.getElementById("accountName").textContent =
+      STORE.accountName;
+
+    document.getElementById("bankName").textContent =
+      STORE.bankName;
+
+    document.getElementById("accountNumber").textContent =
+      STORE.accountNumber;
+
+    document.getElementById("paymentTotal").textContent =
+      formatMoney(total);
+
+    document.getElementById("customerDetails").hidden = true;
+
+    document.getElementById("paymentSection").hidden = false;
+
+  });
+
+// ======================================
+// PAYMENT PROOF UPLOAD
+// ======================================
+
+document.getElementById("proofForm")
+  .addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    const proof =
+      document.getElementById("paymentProof").files[0];
+
+    if (!proof) {
+
+      alert("Please upload your proof of payment.");
+
+      return;
+
+    }
+
+    if (proof.size > 5 * 1024 * 1024) {
+
+      alert("Your file must not exceed 5MB.");
+
+      return;
+
+    }
+
+    if (
+      !proof.type.startsWith("image/") &&
+      proof.type !== "application/pdf"
+    ) {
+
+      alert("Please upload an image or PDF file.");
+
+      return;
+
+    }
+
+    orderNumber =
+      "ANIAH-" + Date.now().toString().slice(-8);
+
+    const total = cart.reduce((sum, item) => {
+
+      const product = products.find(p => p.id === item.id);
+
+      return sum + product.price * item.quantity;
+
+    }, 0);
+
+    const order = {
+
+      orderNumber,
+
+      customer,
+
+      items: cart.map(item => {
+
+        const product = products.find(p => p.id === item.id);
+
+        return {
+          name: product.name,
+          quantity: item.quantity,
+          price: product.price
+        };
+
+      }),
+
+      total,
+
+      proofFileName: proof.name,
+
+      transferReference:
+        document.getElementById("transferReference").value,
+
+      status: "Awaiting payment verification",
+
+      date: new Date().toISOString()
+
+    };
+
+    // DEMO ONLY:
+    // Save order details locally.
+    // A production backend must receive the actual proof file.
+
+    const previousOrders =
+      JSON.parse(localStorage.getItem("aniahOrders") || "[]");
+
+    previousOrders.push(order);
+
+    localStorage.setItem(
+      "aniahOrders",
+      JSON.stringify(previousOrders)
+    );
+
+    // Display confirmation
+
+    document.getElementById("orderNumber").textContent =
+      orderNumber;
+
+    document.getElementById("paymentSection").hidden = true;
+
+    document.getElementById("orderSuccess").hidden = false;
+
+    cart = [];
+
+    updateCart();
+
+  });
+
+// ======================================
+// FINISH ORDER
+// ======================================
+
+document.getElementById("finishShopping")
+  .addEventListener("click", () => {
+
+    checkoutModal.classList.remove("open");
+
+    document.getElementById("customerForm").reset();
+
+    document.getElementById("proofForm").reset();
+
+    document.getElementById("customerDetails").hidden = false;
+
+    document.getElementById("paymentSection").hidden = true;
+
+    document.getElementById("orderSuccess").hidden = true;
+
+  });
+
+// ======================================
+// MOBILE NAVIGATION
+// ======================================
+
+document.getElementById("menuToggle")
+  .addEventListener("click", () => {
+
+    document.getElementById("navigation")
+      .classList.toggle("open");
+
+  });
+
+// ======================================
+// SEARCH BUTTON
+// ======================================
+
+document.getElementById("searchButton")
+  .addEventListener("click", () => {
+
+    document.getElementById("shop").scrollIntoView();
+
+    document.getElementById("searchInput").focus();
+
+  });
+
+// ======================================
+// NEWSLETTER DEMO
+// ======================================
+
+document.getElementById("newsletterForm")
+  .addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    alert("Thank you for joining Aniah's Collection!");
+
+    this.reset();
+
+  });
+
+// ======================================
+// FOOTER AND WHATSAPP
+// ======================================
+
+document.getElementById("year").textContent =
+  new Date().getFullYear();
+
+document.getElementById("whatsappLink").href =
+  "https://wa.me/" + STORE.whatsapp;
+
+// ======================================
+// INITIALISE WEBSITE
+// ======================================
+
+displayProducts();
+
+updateCart();
