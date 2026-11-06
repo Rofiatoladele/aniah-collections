@@ -77,7 +77,7 @@
 <div><b>CUSTOMER CARE</b><a href="#story">Our story</a><a href="#top">Shipping &amp; returns</a><a href="#top">Size guide</a><a href="#top">Contact us</a></div>
 <div><b>WHY SHOP WITH US</b><div style="color:var(--mute)">Delivery across Nigeria<br>7-day exchanges<br>Order by WhatsApp</div></div>
 </div>
-<div class="copy"><span>© 2026 Aniah’s Collection. All rights reserved.</span><a href="#admin" id="ownerLink">Owner login</a></div>
+<div class="copy"><span>© 2026 Aniah’s Collection. All rights reserved.</span></div>
 </div></footer>
 
 <div class="shade" id="shade"></div>
@@ -114,8 +114,11 @@
 <div id="tools" hidden>
 <form id="pf"><input id="pn" placeholder="Product name" required><input id="pp" type="number" min="0" placeholder="Price in ₦" required><select id="pc" aria-label="Category"></select>
 <label class="file">Choose photo<input type="file" id="pi" accept="image/*" hidden></label><span id="pname" class="hint"></span><button class="btn">Save product</button></form>
-<p class="hint">Use Upload photo on the big images, and Edit or Delete on product cards. When done, download products.js and replace the old file on GitHub.</p>
-<button class="btn" id="exp" type="button">Download products.js</button> <button class="btn line" id="rst" type="button">Discard changes</button></div></aside>
+<p class="hint">Use Upload photo on the big images, and Edit or Delete on product cards. When done, click Publish to website so everyone can see your changes.</p>
+<b>Publish to your website</b>
+<form id="gh" onsubmit="return false"><input id="ghu" placeholder="GitHub username"><input id="ghr" placeholder="Repository name"><input id="ghb" placeholder="Branch (usually main)"><input id="ght" type="password" placeholder="GitHub token" autocomplete="off"></form>
+<button class="btn" id="pub" type="button">Publish to website</button><p class="hint" id="pubmsg" role="status"></p>
+<button class="btn line" id="exp" type="button">Download products.js (backup)</button> <button class="btn line" id="rst" type="button">Discard changes</button></div></aside>
 
 <script src="config.js"></script>
 <script src="products.js"></script>

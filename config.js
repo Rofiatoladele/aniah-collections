@@ -7,7 +7,8 @@ const CONFIG = {
     number: "0123456789",
     accountName: "Your Account Name"
   },
-  ownerPin: "1234"                    // PIN for the owner panel (change it!)
+  ownerPin: "1234",                   // PIN for the owner panel (change it!)
+  ownerHash: "aniah-owner-2026"       // secret page address: yoursite.com/#aniah-owner-2026 (change it!)
 };
 
 // Shop categories (first one must stay "all")

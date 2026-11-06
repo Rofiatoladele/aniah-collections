@@ -130,10 +130,9 @@ $("#tp").onclick = () => { tr.scrollLeft < 5 ? tr.scrollTo(tr.scrollWidth, 0) : 
 
 /* ---------- owner panel ---------- */
 $("#pc").innerHTML = CATS.slice(1).map(([k, l]) => `<option value="${k}">${l}</option>`).join("");
-function adminUI() { $("#pin").hidden = admin; $("#tools").hidden = !admin; slots(); renderShop() }
-$("#ownerLink").onclick = e => { e.preventDefault(); $("#adm").hidden = false };
 $("#admX").onclick = () => $("#adm").hidden = true;
-if (location.hash === "#admin") $("#adm").hidden = false;
+const showOwner = () => { if (location.hash === "#" + CONFIG.ownerHash) $("#adm").hidden = false };
+showOwner(); addEventListener("hashchange", showOwner);
 $("#pin").onsubmit = e => { e.preventDefault();
   if ($("#pinIn").value !== CONFIG.ownerPin) return toast("Wrong PIN");
   admin = true; try { sessionStorage.setItem("ac_admin", "1") } catch (er) {}
@@ -145,9 +144,44 @@ $("#pf").onsubmit = e => { e.preventDefault();
     if (editing) Object.assign(find(editing), v, img ? { img } : {}); else data.products.unshift({ id: "p" + Date.now(), ...v, img: img || "" });
     saveDraft(); editing = null; e.target.reset(); $("#pname").textContent = ""; renderShop(); toast("Saved. Download products.js to publish it.") };
   const f = $("#pi").files[0]; f ? shrink(f, 800, finish) : finish("") };
+const fileText = d => "// Your products and site photos. The owner panel's Publish button rewrites this file.\nconst SITE = " + JSON.stringify(d, null, 1) + ";\n";
 $("#exp").onclick = () => {
-  const b = new Blob(["// Your products and site photos. The owner panel's \"Download products.js\" button rewrites this file.\nconst SITE = " + JSON.stringify(data, null, 1) + ";\n"], { type: "text/javascript" });
+  const b = new Blob([fileText(data)], { type: "text/javascript" });
   const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = "products.js"; a.click() };
 $("#rst").onclick = () => { ls.del("ac_draft"); data = clone(SITE); editing = null; adminUI(); toast("Changes discarded") };
 
+
+/* ---------- publish to GitHub ---------- */
+const b64 = s => btoa(unescape(encodeURIComponent(s)));
+const say = t => $("#pubmsg").textContent = t;
+function ghFetch(path, opts = {}) {
+  const g = ls.get("ac_gh", {});
+  return fetch(`https://api.github.com/repos/${g.user}/${g.repo}/contents/${path}` + (opts.method === "PUT" ? "" : `?ref=${g.branch}`),
+    { ...opts, headers: { Authorization: "Bearer " + g.token, Accept: "application/vnd.github+json" } });
+}
+async function put(path, content, msg) {
+  const g = ls.get("ac_gh", {}); let sha;
+  const h = await ghFetch(path);
+  if (h.ok) sha = (await h.json()).sha;
+  else if (h.status !== 404) throw new Error(`GitHub error ${h.status}. Check your username, repository name and token.`);
+  const r = await ghFetch(path, { method: "PUT", body: JSON.stringify({ message: msg, content, branch: g.branch, ...(sha ? { sha } : {}) }) });
+  if (!r.ok) throw new Error(`Could not save ${path} (error ${r.status}). Does the token have Contents: Read and write?`);
+}
+$("#pub").onclick = async () => {
+  const old = ls.get("ac_gh", {});
+  const g = { user: $("#ghu").value.trim(), repo: $("#ghr").value.trim(), branch: $("#ghb").value.trim() || "main", token: $("#ght").value.trim() || old.token || "" };
+  if (!g.user || !g.repo || !g.token) return say("Fill in your GitHub username, repository name and token.");
+  ls.set("ac_gh", g); $("#pub").disabled = true;
+  try {
+    const out = clone(data); let n = 0;
+    const up = async (du, name) => { const path = `images/${name}-${Date.now().toString(36)}.jpg`; say(`Uploading photo ${++n}...`); await put(path, du.split(",")[1], "Add photo " + name); return path };
+    for (const p of out.products) if ((p.img || "").startsWith("data:")) p.img = await up(p.img, p.id);
+    for (const k of Object.keys(out.images)) if (out.images[k].startsWith("data:")) out.images[k] = await up(out.images[k], k);
+    say("Saving products..."); await put("products.js", b64(fileText(out)), "Update products");
+    data = out; saveDraft(); renderShop(); slots();
+    say("Published. Your website updates in 1 to 2 minutes. Refresh the site then.");
+  } catch (e) { say(e.message || "Publish failed. Please try again.") }
+  $("#pub").disabled = false;
+};
+function adminUI() { const g = ls.get("ac_gh", {}); $("#ghu").value = g.user || ""; $("#ghr").value = g.repo || ""; $("#ghb").value = g.branch || "main"; $("#ght").placeholder = g.token ? "Token saved on this device" : "GitHub token"; $("#pin").hidden = admin; $("#tools").hidden = !admin; slots(); renderShop() }
 adminUI();
