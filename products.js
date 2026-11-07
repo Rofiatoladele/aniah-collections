@@ -4,7 +4,8 @@ const SITE = {
   "c1": "images/c1-mw59xexi.jpg",
   "hero": "images/hero-mw59xhfe.jpg",
   "c2": "images/c2-mw59xlj2.jpg",
-  "gift": "images/gift-mw6edwnd.jpg"
+  "gift": "images/gift-mw6edwnd.jpg",
+  "craft": "images/craft-mw6fikw8.jpg"
  },
  "products": [
   {
@@ -113,7 +114,9 @@ const SITE = {
    "img": ""
   }
  ],
- "alts": {},
+ "alts": {
+  "craft": "different color of joggers, pink, orange, brown, ash, cream colour"
+ },
  "texts": {
   "Featured collections": "Featured Collections"
  },
