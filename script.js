@@ -107,6 +107,7 @@ function render() {
 <div class="q"><button data-m="${i}" aria-label="Fewer">−</button>${cart[i]}<button data-pl="${i}" aria-label="More">+</button></div></div>` }).join("")
     : `<p class="hint">Your cart is empty. Add a piece you love.</p>`;
   $("#total").textContent = naira(t); $("#cc").textContent = n; render.total = t;
+  $("#cartBtn").classList.toggle("blink", n === 0); $("#nudge").hidden = n !== 0;
   $("#wc").textContent = Object.keys(wish).filter(i => wish[i] && find(i)).length;
   $$(".heart").forEach(h => { const on = wish[h.dataset.w]; h.classList.toggle("on", !!on); h.textContent = on ? "♥" : "♡" });
   ls.set("ac_cart", cart); ls.set("ac_wish", wish);
@@ -164,7 +165,7 @@ function genLlms() {
 
 /* ---------- editable text (owner only) ---------- */
 const SKIP = "#grid,#posts,#post,#tabs,table,.adm,.modal,.drawer,.toast,.stars,.cnt,.heart,.add,.upbar,.ctl,.price,.arr,.x,button,#catTitle,#catSub,script,style,.sgl";
-const editables = () => $$("header nav a,.bar,main *,footer *").filter(el => !el.children.length && el.textContent.trim() && !el.closest(SKIP));
+const editables = () => $$("header nav a,header .nudge,.bar,main *,footer *").filter(el => !el.children.length && el.textContent.trim() && !el.closest(SKIP));
 function applyTexts() { editables().forEach(el => { const o = el.textContent.trim(); el.dataset.o = o; if (data.texts[o]) el.textContent = data.texts[o] }) }
 function setEdit(on) { editMode = on; editables().forEach(el => { if (on) { el.contentEditable = "true"; el.classList.add("ed") } else { el.removeAttribute("contenteditable"); el.classList.remove("ed") } }) }
 document.addEventListener("focusout", e => { const el = e.target; if (!editMode || !el.dataset || el.dataset.o === undefined) return;
@@ -172,12 +173,21 @@ document.addEventListener("focusout", e => { const el = e.target; if (!editMode 
 document.addEventListener("keydown", e => { if (editMode && e.key === "Enter" && e.target.classList && e.target.classList.contains("ed")) { e.preventDefault(); e.target.blur() } });
 document.addEventListener("click", e => { if (editMode && e.target.closest(".ed")) e.preventDefault() }, true);
 
+/* ---------- "added to cart" flashing pop-up ---------- */
+function popAdd(p) {
+  const e = $("#pop"); e.innerHTML = `<span class="dot"></span><span><b>Added:</b> ${esc(p.name)}</span><button type="button" class="mini" data-vc="1">View cart</button><button type="button" class="px" data-pc="1" aria-label="Close">×</button>`;
+  e.classList.remove("on"); void e.offsetWidth; e.classList.add("on");
+  clearTimeout(popAdd.t); popAdd.t = setTimeout(() => e.classList.remove("on"), 7000);
+}
+
 /* ---------- clicks ---------- */
 const drawer = v => { $("#drawer").classList.toggle("on", v); $("#shade").classList.toggle("on", v) };
 document.addEventListener("click", e => {
   const t = e.target.closest("button,a"); if (!t) return; const d = t.dataset;
   if (d.f) { filter = d.f; renderShop() }
-  if (d.a) { cart[d.a] = (cart[d.a] || 0) + 1; render(); toast("Added to cart") }
+  if (d.a) { cart[d.a] = (cart[d.a] || 0) + 1; render(); popAdd(find(d.a)) }
+  if (d.vc) { $("#pop").classList.remove("on"); drawer(true) }
+  if (d.pc) $("#pop").classList.remove("on")
   if (d.pl) { cart[d.pl]++; render() }
   if (d.m) { if (--cart[d.m] <= 0) delete cart[d.m]; render() }
   if (d.w) { wish[d.w] = !wish[d.w]; render(); toast(wish[d.w] ? "Saved to wishlist" : "Removed from wishlist") }
@@ -407,6 +417,6 @@ function adminUI() {
     $("#szW").value = data.sizes.women; $("#szM").value = data.sizes.men; loadSeo(); renderBlogList();
     if (!$("#admOpen")) { const b = document.createElement("button"); b.id = "admOpen"; b.className = "admOpen"; b.textContent = "Owner dashboard"; b.onclick = () => openPanel(); document.body.appendChild(b) }
   }
-  slots(); renderShop(); renderBlog(); renderPost(); renderSizes();
+  slots(); renderShop(); renderBlog(); renderPost(); renderSizes(); render();
 }
 adminUI(); applyTexts(); applySEO();
