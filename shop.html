@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shop | Aniah’s Collection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="bar">Free delivery in Lagos on orders over ₦50,000</div>
+<header><div class="wrap nav">
+<nav aria-label="Main"><a href="shop.html?cat=ankara">ANKARA</a><a href="shop.html?cat=joggers-women">JOGGERS FOR HER</a><a href="shop.html?cat=joggers-men">JOGGERS FOR HIM</a><a href="shop.html?cat=jewelry">JEWELRY</a></nav>
+<a class="logo-wrap" href="index.html" aria-label="Aniah’s Collection home"><img class="logo" src="images/logo.png" alt="Aniah’s Collection"></a>
+<div class="tools"><button id="wishBtn">WISHLIST <span class="cnt" id="wc">0</span></button><button id="cartBtn" aria-label="Open cart">CART <span class="cnt" id="cc">0</span></button></div>
+</div></header>
+
+<main id="top">
+<section class="pagehead"><div class="wrap"><div class="kick"><a href="index.html">HOME</a> / SHOP</div><h1 id="catTitle">All products</h1><div class="hint" id="catSub"></div></div></section>
+<section class="prods"><div class="wrap"><div class="tabs" id="tabs" role="group" aria-label="Filter by category"></div><div class="grid" id="grid"></div></div></section>
+<section class="split" style="padding:0">
+<div class="gift"><div class="slot s2" data-slot="gift"></div><div><div class="kick">THE PERFECT GIFT</div><h2>Gift guide</h2><p style="color:var(--mute)">From birthdays to weddings, find a piece she will wear again and again.</p><a class="btn" href="shop.html">Explore gifts</a></div></div>
+<div class="news" id="community"><div class="kick" style="color:var(--pink)">STAY CONNECTED</div><h2>Join our community</h2><p>Be first to see new prints, offers and style ideas.</p>
+<form id="nf"><input type="email" id="em" placeholder="Enter your email address" aria-label="Email address" required><button>SUBSCRIBE</button></form><div class="msg" id="msg" role="status"></div></div>
+</section>
+</main>
+
+<footer><div class="wrap">
+<div class="fgrid">
+<div><img class="logo" src="images/logo.png" alt="Aniah’s Collection" style="width:120px;margin:-10px 0 0 -8px"><div style="color:var(--mute)">Timeless fabrics. Endless style.</div></div>
+<div><b>SHOP</b><a href="shop.html?cat=ankara">Ankara &amp; prints</a><a href="shop.html?cat=joggers-women">Joggers for her</a><a href="shop.html?cat=joggers-men">Joggers for him</a><a href="shop.html?cat=jewelry">Jewelry</a></div>
+<div><b>COLLECTIONS</b><a href="shop.html">All products</a><a href="index.html#collections">Featured</a><a href="index.html#story">Our story</a></div>
+<div><b>CUSTOMER CARE</b><a href="index.html#story">Our story</a><a href="#top">Shipping &amp; returns</a><a href="#top">Size guide</a><a href="#top">Contact us</a></div>
+<div><b>WHY SHOP WITH US</b><div style="color:var(--mute)">Delivery across Nigeria<br>7-day exchanges<br>Order by WhatsApp</div></div>
+</div>
+<div class="copy"><span>© 2026 Aniah’s Collection. All rights reserved.</span></div>
+</div></footer>
+
+<div class="shade" id="shade"></div>
+<aside class="drawer" id="drawer" aria-label="Shopping cart">
+<div class="top"><h2 id="dt">Your cart</h2><button class="x" id="close" aria-label="Close cart">×</button></div>
+<div class="items" id="items"></div>
+<div class="tot"><span>Total</span><b id="total">₦0</b></div>
+<button class="btn" id="checkout">Checkout</button>
+</aside>
+<div class="toast" id="toast" role="status"></div>
+<input type="file" id="file" accept="image/*" hidden>
+<div class="modal" id="co" role="dialog" aria-modal="true" aria-label="Checkout"><div class="mbox">
+<button class="x" id="coX" aria-label="Close checkout">×</button>
+<ol class="steps"><li id="s1" class="on">Delivery details</li><li id="s2">Pay by transfer</li><li id="s3">Confirmation</li></ol>
+<form id="f1" class="pane"><h2>Where should we deliver?</h2>
+<label>Full name<input name="name" required autocomplete="name"></label>
+<label>Phone / WhatsApp number<input name="phone" type="tel" required autocomplete="tel"></label>
+<label>Delivery address<input name="address" required autocomplete="street-address"></label>
+<div class="two"><label>City<input name="city" required></label><label>State<input name="state" required></label></div>
+<label>Notes (optional)<input name="notes" placeholder="Landmark, size, preferred delivery time"></label>
+<button class="btn">Continue to payment</button></form>
+<div id="f2" class="pane" hidden><h2>Pay by bank transfer</h2>
+<div class="box" id="sum"></div>
+<p class="hint">Transfer the exact total to this account, using the narration below.</p>
+<div class="box" id="bank"></div>
+<p><b>Upload your proof of payment</b></p>
+<label class="file">Choose screenshot or receipt<input type="file" id="proofIn" accept="image/*" hidden></label> <span id="pfn" class="hint">No file chosen</span>
+<p class="hint" id="sendHint"></p>
+<button class="btn" id="send" disabled>Send order and proof</button> <button class="btn line" id="back" type="button">Back</button></div>
+<div id="f3" class="pane" hidden><div id="done"></div></div>
+</div></div>
+<aside class="adm" id="adm" hidden><div class="ah"><b>Owner panel</b><button class="x" id="admX" aria-label="Close owner panel">×</button></div>
+<form id="pin"><input type="password" id="pinIn" placeholder="Owner PIN" autocomplete="off"><button class="btn">Unlock</button></form>
+<div id="tools" hidden>
+<form id="pf"><input id="pn" placeholder="Product name" required><input id="pp" type="number" min="0" placeholder="Price in ₦" required><select id="pc" aria-label="Category"></select>
+<label class="file">Choose photo<input type="file" id="pi" accept="image/*" hidden></label><span id="pname" class="hint"></span><button class="btn">Save product</button></form>
+<p class="hint">Use Upload photo on the big images, and Edit or Delete on product cards. When done, click Publish to website so everyone can see your changes.</p>
+<b>Publish to your website</b>
+<form id="gh" onsubmit="return false"><input id="ghu" placeholder="GitHub username"><input id="ghr" placeholder="Repository name"><input id="ghb" placeholder="Branch (usually main)"><input id="ght" type="password" placeholder="GitHub token" autocomplete="off"></form>
+<button class="btn" id="pub" type="button">Publish to website</button><p class="hint" id="pubmsg" role="status"></p>
+<button class="btn line" id="exp" type="button">Download products.js (backup)</button> <button class="btn line" id="rst" type="button">Discard changes</button></div></aside>
+
+<script src="config.js"></script>
+<script src="products.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

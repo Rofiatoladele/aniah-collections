@@ -11,7 +11,7 @@ let admin = false;
 try { admin = sessionStorage.getItem("ac_admin") === "1" } catch (e) {}
 let data = (admin && ls.get("ac_draft", null)) || clone(SITE);
 let cart = ls.get("ac_cart", {}), wish = ls.get("ac_wish", {});
-let filter = "all", editing = null, proof = null, order = null, curSlot = null;
+let filter = new URLSearchParams(location.search).get("cat") || "all", editing = null, proof = null, order = null, curSlot = null;
 const CLS = { ankara: "s1", "joggers-women": "s2", "joggers-men": "s3", jewelry: "s4" };
 const find = id => data.products.find(p => p.id === id);
 const bgi = u => u ? `style="background-image:url('${u}')"` : "";
@@ -32,8 +32,18 @@ const card = p => `<article class="p"><button class="heart" data-w="${p.id}" ari
 <div class="price">${naira(p.price)}</div><button class="add" data-a="${p.id}">Add to cart</button>
 ${admin ? `<div class="ctl"><button data-e="${p.id}">Edit</button><button data-d="${p.id}">Delete</button></div>` : ""}</article>`;
 function renderShop() {
-  $("#tabs").innerHTML = CATS.map(([k, l]) => `<button class="${k === filter ? "on" : ""}" data-f="${k}">${l}</button>`).join("");
-  const list = data.products.filter(p => filter === "all" || p.cat === filter);
+  const page = $("#catTitle");
+  if (!CATS.some(c => c[0] === filter) || !page) filter = "all";
+  const tabs = $("#tabs");
+  if (tabs) tabs.innerHTML = CATS.map(([k, l]) => `<button class="${k === filter ? "on" : ""}" data-f="${k}">${l}</button>`).join("");
+  let list = data.products.filter(p => filter === "all" || p.cat === filter);
+  if (!page) list = list.slice(0, 8);
+  else {
+    const t = filter === "all" ? "All products" : CATS.find(c => c[0] === filter)[1];
+    $("#catTitle").textContent = t; document.title = t + " | Aniah’s Collection";
+    $("#catSub").textContent = list.length + (list.length === 1 ? " item" : " items");
+    try { history.replaceState(null, "", filter === "all" ? "shop.html" : "shop.html?cat=" + filter) } catch (e) {}
+  }
   $("#grid").innerHTML = list.length ? list.map(card).join("") : `<p class="hint">Nothing here yet. Check back soon.</p>`;
   render();
 }
@@ -124,9 +134,11 @@ $("#send").onclick = async () => {
 
 /* ---------- newsletter + testimonials ---------- */
 $("#nf").onsubmit = e => { e.preventDefault(); $("#msg").textContent = "Thank you. " + $("#em").value + " is on the list."; $("#em").value = "" };
-const tr = $("#track"), stepW = () => tr.firstElementChild.offsetWidth + 20;
-$("#tn").onclick = () => { tr.scrollLeft + stepW() >= tr.scrollWidth - tr.clientWidth - 5 ? tr.scrollTo(0, 0) : tr.scrollBy(stepW(), 0) };
-$("#tp").onclick = () => { tr.scrollLeft < 5 ? tr.scrollTo(tr.scrollWidth, 0) : tr.scrollBy(-stepW(), 0) };
+if ($("#track")) {
+  const tr = $("#track"), stepW = () => tr.firstElementChild.offsetWidth + 20;
+  $("#tn").onclick = () => { tr.scrollLeft + stepW() >= tr.scrollWidth - tr.clientWidth - 5 ? tr.scrollTo(0, 0) : tr.scrollBy(stepW(), 0) };
+  $("#tp").onclick = () => { tr.scrollLeft < 5 ? tr.scrollTo(tr.scrollWidth, 0) : tr.scrollBy(-stepW(), 0) };
+}
 
 /* ---------- owner panel ---------- */
 $("#pc").innerHTML = CATS.slice(1).map(([k, l]) => `<option value="${k}">${l}</option>`).join("");
