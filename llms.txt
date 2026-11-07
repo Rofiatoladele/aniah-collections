@@ -1,0 +1,26 @@
+# Aniah’s Collection
+
+> Aniah’s Collection sells Ankara fabrics and styles, joggers for men and women, and jewelry, with delivery across Nigeria.
+
+## Pages
+- [Home](/): Shop Ankara fabrics and styles, joggers for men and women, and jewelry from Aniah’s Collection. Pay by bank transfer, delivery across Nigeria.
+- [Shop](/shop.html): Browse all Ankara prints, men’s and women’s joggers and jewelry. Order online and pay by bank transfer.
+- [Size guide](/size-guide.html): Find your jogger size by waist and height. Size charts in cm and inches for men and women.
+- [Blog](/blog.html): Style tips, fabric guides and news from Aniah’s Collection.
+
+## Products
+- Akwete: ₦20,000 (Ankara & Prints)
+- Akwete: ₦20,000 (Ankara & Prints)
+- Akwete: ₦20,000 (Ankara & Prints)
+- Akwete: ₦20,000 (Ankara & Prints)
+- Akwete: ₦20 (Ankara & Prints)
+- Akwete: ₦20,000 (Ankara & Prints)
+- Akwete: ₦20,000 (Ankara & Prints)
+- Akwete: ₦20,000 (Ankara & Prints)
+- Akwete: ₦20,000 (Ankara & Prints)
+- Women's Fleece Jogger: ₦16,500 (Joggers for Her)
+- Women's Jogger Set: ₦32,000 (Joggers for Her)
+- Men's Cuffed Jogger: ₦17,500 (Joggers for Him)
+- Men's Jogger and Hoodie Set: ₦38,000 (Joggers for Him)
+- Gold-Tone Hoop Earrings: ₦9,500 (Jewelry)
+- Beaded Statement Necklace: ₦12,000 (Jewelry)
